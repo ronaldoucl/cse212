@@ -32,7 +32,12 @@ public class Maze
     /// </summary>
     public void MoveLeft()
     {
-        // FILL IN CODE
+        // Index 0 represents the 'left' direction
+        if (_mazeMap[(_currX, _currY)][0]) {
+            _currX--;
+        } else {
+            throw new InvalidOperationException("Can't go that way!"); // Throw exception if movement is blocked
+        }   
     }
 
     /// <summary>
@@ -41,7 +46,12 @@ public class Maze
     /// </summary>
     public void MoveRight()
     {
-        // FILL IN CODE
+        // Index 1 represents the 'right' direction
+        if (_mazeMap[(_currX, _currY)][1]) {
+            _currX++; // Move right by increasing X position
+        } else {
+            throw new InvalidOperationException("Can't go that way!"); // Throw exception if movement is blocked
+        }
     }
 
     /// <summary>
@@ -50,7 +60,12 @@ public class Maze
     /// </summary>
     public void MoveUp()
     {
-        // FILL IN CODE
+        // Index 2 represents the 'up' direction
+        if (_mazeMap[(_currX, _currY)][2]) {
+            _currY--;
+        } else {
+            throw new InvalidOperationException("Can't go that way!"); //Throw exception if movement is blocked
+        }
     }
 
     /// <summary>
@@ -59,7 +74,13 @@ public class Maze
     /// </summary>
     public void MoveDown()
     {
-        // FILL IN CODE
+        // Index 3 represents the 'down' direction
+        if (_mazeMap[(_currX, _currY)][3]) {
+            _currY++; // Move down by increasing Y position
+        } else {
+            throw new InvalidOperationException("Can't go that way!"); // Throw exception if movement is blocked
+        }
+            
     }
 
     public string GetStatus()

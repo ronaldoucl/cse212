@@ -22,7 +22,29 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var set = new HashSet<string>(words); // Store all words in a set for fast lookups
+        var result = new List<string>(); // List to store the resulting pairs
+
+        // Iterate over each word
+        foreach (var word in words)
+        {
+            if (word[0] == word[1]) continue; // Skip words like "aa" (same letters)
+
+            var reversed = new string(new[] { word[1], word[0] }); // Create the reversed version of the current word
+
+            // Check if the reversed word exists in the set
+            if (set.Contains(reversed))
+            {
+                // Add the symmetric pair to the result list
+                result.Add($"{word} & {reversed}");
+
+                // Remove both words from the set to avoid duplicate pairs
+                set.Remove(word);
+                set.Remove(reversed);
+            }
+        }
+
+        return result.ToArray(); // Convert the result list to an array and return it
     }
 
     /// <summary>
@@ -42,10 +64,23 @@ public static class SetsAndMaps
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            // Ensure the line has at least 4 columns
+            if (fields.Length > 3)
+            {
+                var degree = fields[3].Trim(); // Extract degree from column 4 (index 3)
+
+                if (degrees.ContainsKey(degree))
+                {
+                    degrees[degree]++; // Increment the count if the degree already exists
+                }
+                else
+                {
+                    degrees[degree] = 1; // Add new degree with initial count 1
+                }
+            }
         }
 
-        return degrees;
+        return degrees; // Return the dictionary with all degree counts
     }
 
     /// <summary>
@@ -67,7 +102,40 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        var cleanA = word1.Replace(" ", "").ToLower(); // Remove spaces and convert to lowercase
+        var cleanB = word2.Replace(" ", "").ToLower(); // Do the same for the second word
+
+        // Quick check: if lengths differ, they can't be anagrams
+        if (cleanA.Length != cleanB.Length)
+        {
+            return false;
+        }
+
+        var letterCounts = new Dictionary<char, int>();
+
+        // Count each character in the first word
+        foreach (char c in cleanA)
+        {
+            if (letterCounts.ContainsKey(c))
+                letterCounts[c]++; // Increment count if character exists
+            else
+                letterCounts[c] = 1; // Initialize count to 1
+        }
+
+        // Subtract character counts using the second word
+        foreach (char c in cleanB)
+        {
+            if (!letterCounts.ContainsKey(c))
+                return false;
+
+            letterCounts[c]--; // Decrease count
+
+            if (letterCounts[c] < 0)
+                return false;
+        }
+
+        // Ensure all character counts are zero
+        return letterCounts.Values.All(count => count == 0);
     }
 
     /// <summary>
@@ -101,6 +169,23 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        var result = new List<string>(); // Prepare list to hold formatted earthquake strings
+
+        if (featureCollection?.features != null) // Ensure the data was deserialized correctly
+        {
+            // Iterate over each earthquake feature
+            foreach (var feature in featureCollection.features)
+            {
+                var place = feature.properties?.place; // Get location description
+                var mag = feature.properties?.mag; // Get magnitude
+
+                if (!string.IsNullOrEmpty(place) && mag.HasValue) // Only include valid data
+                {
+                    result.Add($"{place} - Mag {mag.Value}"); // Format and add to result
+                }
+            }
+        }
+
+        return result.ToArray(); // Convert list to array and return
     }
 }
